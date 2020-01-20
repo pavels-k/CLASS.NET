@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'learning_system.courses.apps.CoursesConfig',
+    'learning_system.practice.apps.PracticeConfig',
+    'learning_system.theory.apps.TheoryConfig',
     'learning_system.users.apps.UsersConfig',
+    'core',
 ]
 
-AUTH_USER_MODEL = 'learning_system.users'
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
