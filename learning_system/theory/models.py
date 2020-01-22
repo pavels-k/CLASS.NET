@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.db import models
+from learning_system.courses.models import Course
 
-class Course(models.Model):
-    title = models.CharField(max_length=50, verbose_name='Название предмета')
 
 class TheoryPost(models.Model):
     content = models.CharField(max_length=50, verbose_name='Аттрибут текста материала')

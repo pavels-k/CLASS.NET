@@ -1,3 +1,7 @@
 from django.contrib import admin
+from learning_system.theory.models import TheoryPost, TheoryCategory
 
-# Register your models here.
+
+admin.site.register(TheoryPost)
+admin.site.register(TheoryCategory)
+

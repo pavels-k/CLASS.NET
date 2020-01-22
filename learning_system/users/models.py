@@ -21,8 +21,8 @@ class Group(models.Model):
     user = models.ManyToManyField(User, verbose_name='Пользователь')
     name = models.CharField(max_length=50, verbose_name='Название курса')
     date_of_creation = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, default='some strings', related_name='Student_course')
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, default='some strings', related_name='Teacher_course')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='Student_course')
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='Teacher_course')
     available_subjects = models.ManyToManyField("self", verbose_name='Доступные предметы')
     
 def  group_validate(self):

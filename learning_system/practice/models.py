@@ -13,7 +13,7 @@ class PracticeTask(models.Model):
     content = models.CharField(max_length=50, verbose_name='Текста задачи')
     complexity = models.CharField(max_length=50, verbose_name='Сложность задачи')
     type_task = models.CharField(max_length=50, verbose_name='Тип задачи') # изменить в схеме
-    practicecategory = models.ForeignKey(PracticeCategory, on_delete=models.CASCADE, default='SOME STRING', verbose_name='Практический материал')
+    practicecategory = models.ForeignKey(PracticeCategory, on_delete=models.CASCADE, verbose_name='Практический материал')
 
 class PracticeTaskVariation(models.Model):
     # убрать task в схеме
