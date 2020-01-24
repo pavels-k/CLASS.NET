@@ -32,7 +32,7 @@ class UserModelTest(TestCase):
         #group_validate(student_1)
         #self.assertEqual(student_1.groups.all().count() == 0, True)
     
-    def test_9(self):
+    def test_group_can_be_tied_to_several_сourses(self):
         teacher_1 = Teacher.objects.create(username = 'Teacher #1')
         group_1 = Group.objects.create()
         teacher_1.groups.add(group_1)
