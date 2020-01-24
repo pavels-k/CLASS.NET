@@ -11,6 +11,11 @@ class UserModelTest(TestCase):
     def setUp(cls):
         pass
 
+    def test_6(self):
+        student_1 = Student.objects.create(username = 'Student #1')
+        teacher = Teacher.objects.create(username = 'Teacher #1')
+        self.assertEqual(Student.objects.all().count() + Teacher.objects.all() > 1, True)
+'''
     def test_1(self):
         course_1 = Course.objects.create(title = 'Математический анализ')
         course_2 = Course.objects.create(title = 'ТВиМС')
@@ -23,16 +28,13 @@ class UserModelTest(TestCase):
         practicetask_1 = PracticeTask.objects.create(content = 'Текст Практического материала материала', practicecategory = practicecategory_1)
         self.assertEqual(theorypost_1.course == course_1, True)
         self.assertEqual(practicecategory_1.course == course_1, True)
+'''
+
+
+
 
 
 '''
-
-    def test_6(self):
-        student = Student.objects.create(username = 'Student #1')
-        teacher = Teacher.objects.create(username = 'Teacher #1')
-        print(Student.objects.all())
-        self.assertEqual(Student.objects.all().count() > 1, False)
-    
     def test_9(self):
         pass
 

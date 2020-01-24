@@ -7,16 +7,34 @@ from django.core.exceptions import ValidationError
 class User(AbstractUser):
     is_staff = models.BooleanField(default=False)
     groups = models.ManyToManyField('users.Group', related_name="groups")
+    role = models.CharField(max_length=1, choices=(('S', 'Student'),('T', 'Teacher'),))
+
+class StudentManager(models.Manager):
+    def get_queryset(self):
+        return super(StudentManager, self).get_queryset().filter(role='S')
     
+    def create(self, **kwargs):
+        kwargs.update({'role': 'S'})
+        return super(StudentManager, self).create(**kwargs)
+
+class TeacherManager(models.Manager):
+    def get_queryset(self):
+        return super(TeacherManager, self).get_queryset().filter(role='T')
+
+    def create(self, **kwargs):
+        kwargs.update({'role': 'T'})
+        return super(TeacherManager, self).create(**kwargs)
 
 class Student(User):
+    objects = StudentManager()
     class Meta:
         proxy = True
 
 class Teacher(User):
+    objects = TeacherManager()
     class Meta:
         proxy = True
-
+    
 class Group(models.Model):
     user = models.ManyToManyField(User, verbose_name='Пользователь')
     name = models.CharField(max_length=50, verbose_name='Название курса')
