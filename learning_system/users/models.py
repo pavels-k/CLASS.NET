@@ -13,7 +13,6 @@ class StudentManager(models.Manager):
     def get_queryset(self):
         return super(StudentManager, self).get_queryset().filter(role='S')
     
-
 class TeacherManager(models.Manager):
     def get_queryset(self):
         return super(TeacherManager, self).get_queryset().filter(role='T')
@@ -34,7 +33,6 @@ class Teacher(User):
         self.role = 'T'
         super(Teacher, self).save(*args, **kwargs)
         
-    
 class Group(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название курса')
     date_of_creation = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
@@ -48,10 +46,17 @@ def  group_validate(self):
         except ValidationError as e:
             print('we have an error')
     
-
 class UserProgress(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь') # дополнить схему
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     score = models.IntegerField(verbose_name='Количество очков')
     answers = models.CharField(max_length=100, verbose_name='Ответы')
     practicetask = models.ForeignKey(PracticeTask, on_delete=models.CASCADE, verbose_name='Задача')
     
+class UserComplaint(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    complaints = models.TextField(verbose_name='Жалобы пользователей')
+
+class ReviewsOnTeacher(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name='Студент')
+    reviews = models.TextField(verbose_name='Отзывы на преподавателей')
+    fullname = models.CharField(max_length=100, verbose_name='Ф.И.О. преподавателя')

@@ -4,7 +4,7 @@ from learning_system.theory.models import TheoryCategory
 from learning_system.practice.models import  PracticeCategory,PracticeTask
 
 
-class UserModelTest(TestCase):
+class CourseModelTest(TestCase):
 
     @classmethod
     def setUp(cls):
@@ -20,6 +20,6 @@ class UserModelTest(TestCase):
         course_1 = Course.objects.create(title = 'Математический анализ')
         theorycategory_1 = TheoryCategory.objects.create(course = course_1)
         practicecategory_1 = PracticeCategory.objects.create(course = course_1)
-        practicetask_1 = PracticeTask.objects.create(content = 'Текст Практического материала материала', practicecategory = practicecategory_1)
+        practicetask_1 = PracticeTask.objects.create(content = 'Текст Практического материала материала', category = practicecategory_1)
         self.assertEqual(theorycategory_1.course == course_1, True)
         self.assertEqual(practicecategory_1.course == course_1, True)

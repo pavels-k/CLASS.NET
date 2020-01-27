@@ -1,8 +1,11 @@
 from django.contrib import admin
-from learning_system.practice.models import PracticeType, PracticeCategory, PracticeTask, PracticeTaskVariation
+from learning_system.practice.models import PracticeCategory, PracticeTask
+#from learning_system.practice.models import PracticeType, PracticeTaskVariation
 
 
-admin.site.register(PracticeType)
 admin.site.register(PracticeCategory)
 admin.site.register(PracticeTask)
+'''
+admin.site.register(PracticeType)
 admin.site.register(PracticeTaskVariation)
+'''
