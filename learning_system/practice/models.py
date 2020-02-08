@@ -13,10 +13,10 @@ class PracticeTask(models.Model):
     complexity = models.CharField(max_length=50, verbose_name='Сложность задачи')
     type_task = models.CharField(max_length=50, verbose_name='Тип задачи') # изменить в схеме
     category = models.ForeignKey(PracticeCategory, on_delete=models.CASCADE, verbose_name='Практический материал')
-    student = models.ManyToManyField('users.Student', through='TaskUserData')
+    #student = models.ManyToManyField('users.Student', through='TaskUserData')
 
 class TaskUserData(models.Model):
-    student = models.ForeignKey('users.Student', on_delete=models.CASCADE, verbose_name='Студент')
+    #student = models.ForeignKey('users.Student', on_delete=models.CASCADE, verbose_name='Студент')
     practicetask = models.ForeignKey(PracticeTask, on_delete=models.CASCADE, verbose_name='Практическое задание')
     status = models.CharField(max_length=1, choices=(('C', 'Correct'),('P', 'Partially correct'),('W', 'Wrong')), verbose_name='Статус ответа')
     tries_count = models.IntegerField(default = 0, verbose_name='Чило попыток')

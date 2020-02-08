@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'learning_system.theory.apps.TheoryConfig',
     'learning_system.users.apps.UsersConfig',
     'core',
+    'rest_framework',
 ]
 
 AUTH_USER_MODEL = 'users.User'

@@ -36,7 +36,7 @@ class Teacher(User):
 class Group(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название курса')
     date_of_creation = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
-    available_subjects = models.ManyToManyField("self", verbose_name='Доступные предметы')
+    available_subjects = models.ManyToManyField("self", verbose_name='Доступные предметы', blank=True)
     
 def  group_validate(self):
     if (self.role == "S") and (self.groups.all().count() > 1):
@@ -50,7 +50,7 @@ class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     score = models.IntegerField(verbose_name='Количество очков')
     answers = models.CharField(max_length=100, verbose_name='Ответы')
-    practicetask = models.ForeignKey(PracticeTask, on_delete=models.CASCADE, verbose_name='Задача')
+    practicetask = models.ForeignKey('practice.PracticeTask', on_delete=models.CASCADE, verbose_name='Задача')
     
 class UserComplaint(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
