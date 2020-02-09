@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from learning_system.practice.models import PracticeTask
 from django.core.exceptions import ValidationError
-    
+
 class User(AbstractUser):
     is_staff = models.BooleanField(default=False)
     groups = models.ManyToManyField('users.Group', related_name="groups")

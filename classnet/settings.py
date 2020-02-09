@@ -43,9 +43,17 @@ INSTALLED_APPS = [
     'learning_system.users.apps.UsersConfig',
     'core',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
 ]
-
+SITE_ID = 2
 AUTH_USER_MODEL = 'users.User'
+
+AUTHENTICATION_BACKENDS = (
+"django.contrib.auth.backends.ModelBackend",
+"allauth.account.auth_backends.AuthenticationBackend"
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
