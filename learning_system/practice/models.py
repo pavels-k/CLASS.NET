@@ -1,42 +1,64 @@
-from django.conf import settings
 from django.db import models
+
 from learning_system.theory.models import Course
-#from learning_system.users.models import Student
 
 
 class PracticeCategory(models.Model):
-    parent = models.ForeignKey('self',blank=True, null=True ,related_name='childrens', on_delete=models.CASCADE, verbose_name='') 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Учебный предмет') 
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='childrens', on_delete=models.CASCADE,
+                               verbose_name='')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Учебный предмет')
+
+    class Meta:
+        verbose_name = 'раздел практического материала'
+        verbose_name_plural = 'разделы практического материала'
+
+    def __str__(self):
+        return str(self.pk)
+
 
 class PracticeTask(models.Model):
+    class Task:
+        TESTING = 1
+        SELF_EDUCATION = 2
+        CONTROLING = 3
+        TASK_TYPES = (
+            (TESTING, 'Тестовая'),
+            (SELF_EDUCATION, 'Самообучение'), 
+            (CONTROLING, 'Контролирующая')
+            )
+    task_type = models.CharField(choices=Task.TASK_TYPES, default=Task.TESTING,max_length=50, verbose_name='Тип задачи') 
     content = models.CharField(max_length=50, verbose_name='Текста задачи')
     complexity = models.CharField(max_length=50, verbose_name='Сложность задачи')
-    type_task = models.CharField(max_length=50, verbose_name='Тип задачи') # изменить в схеме
     category = models.ForeignKey(PracticeCategory, on_delete=models.CASCADE, verbose_name='Практический материал')
-    #student = models.ManyToManyField('users.Student', through='TaskUserData')
+
+
+    class Meta:
+        verbose_name = 'практическое задание'
+        verbose_name_plural = 'практические задания'
+
+    def __str__(self):
+        return str(self.pk)
+
 
 class TaskUserData(models.Model):
-    #student = models.ForeignKey('users.Student', on_delete=models.CASCADE, verbose_name='Студент')
-    practicetask = models.ForeignKey(PracticeTask, on_delete=models.CASCADE, verbose_name='Практическое задание')
-    status = models.CharField(max_length=1, choices=(('C', 'Correct'),('P', 'Partially correct'),('W', 'Wrong')), verbose_name='Статус ответа')
-    tries_count = models.IntegerField(default = 0, verbose_name='Чило попыток')
-    user_answer = models.CharField(max_length=50, verbose_name='Ответ пользователя') 
+    practice_task = models.ForeignKey(PracticeTask, on_delete=models.CASCADE, verbose_name='Практическое задание')
+    status = models.CharField(max_length=1, choices=(('C', 'Correct'), ('P', 'Partially correct'), ('W', 'Wrong')),
+                              verbose_name='Статус ответа')
+    tries_count = models.IntegerField(default=0, verbose_name='Число попыток')
+    user_answer = models.CharField(max_length=50, verbose_name='Ответ пользователя')
     correct_answer = models.CharField(max_length=50, verbose_name='Правильный ответ')
-    params = models.CharField(max_length=50, verbose_name='')
+    #params = models.CharField(max_length=50, verbose_name='')
+
+    class Meta:
+        verbose_name = 'состояние практического задания'
+        verbose_name_plural = 'состояния практических заданий'
+
     def add_new_try(self):
         self.tries_count += 1
-        #self.state = PracticeTask.
-        #self.user_answer = None
+        # self.state = PracticeTask.
+        # self.user_answer = None
         self.save()
 
+    def __str__(self):
+        return str(self.pk)
 
-
-'''
-class PracticeType(models.Model):
-    article = models.AutoField(primary_key=True, verbose_name='Тип задачи')
-
-class PracticeTaskVariation(models.Model):
-    # убрать task в схеме
-    practicetask = models.ForeignKey(PracticeTask, on_delete=models.CASCADE, verbose_name='Класс задачи')
-'''
-    

@@ -8,8 +8,8 @@
             "name": "Python: Current File (Integrated Terminal)",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "program": "C:/Users/Паша/Downloads/Диплом/работа/CLASS.NET/manage.py",
+            "console": "integratedTerminal",
             "args": [
                 "test"
             ],

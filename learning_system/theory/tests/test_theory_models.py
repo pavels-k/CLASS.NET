@@ -1,3 +1,4 @@
+
 from django.test import TestCase
 from learning_system.courses.models import Course
 from learning_system.theory.models import TheoryCategory, TheoryPost
@@ -18,6 +19,3 @@ class TheoryModelTest(TestCase):
         theorytask_subsection_1 = TheoryPost.objects.create(content = 'Теория подраздела', category = theorycategory_subsection_1)
         self.assertEqual(theorytask_section_1.content == 'Теория раздела', True)
         self.assertEqual(theorytask_subsection_1.content == 'Теория подраздела', True)
-
-    
-    

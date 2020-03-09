@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = '#*6_y@$!(8$3&!cm895_076iapu6k6rkq-mb0f^4n%&%a@+e=g'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -41,18 +39,17 @@ INSTALLED_APPS = [
     'learning_system.practice.apps.PracticeConfig',
     'learning_system.theory.apps.TheoryConfig',
     'learning_system.users.apps.UsersConfig',
-    'core',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_auth',
+    # 'rest_auth',
     'django.contrib.sites',
 ]
 SITE_ID = 2
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = (
-"django.contrib.auth.backends.ModelBackend",
-"allauth.account.auth_backends.AuthenticationBackend"
+    "django.contrib.auth.backends.ModelBackend",
+    # "allauth.account.auth_backends.AuthenticationBackend"
 )
 
 MIDDLEWARE = [
@@ -85,7 +82,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'classnet.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -95,7 +91,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -115,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -128,7 +122,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
