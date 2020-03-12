@@ -137,57 +137,8 @@ class SetStudentGroupSerializer(serializers.ModelSerializer):
         return student
     
 
-class CourseSerializer(serializers.Serializer):
-    choices = Course.objects.values_list('title', flat=True)
-    course = serializers.ChoiceField(label='Курс', choices=choices)
+class GetTaskListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Course
-        fields = ('title')
+        model = PracticeTask
+        fields = ('__all__')
 
-class StudyGroupSerializer(serializers.Serializer):
-    available_subjects = CourseSerializer()
-    class Meta:
-        model = Course
-        fields = ('available_subjects')
-
-class GetTaskListSerializer(serializers.Serializer):
-    '''
-    choices = Course.objects.values_list('title', flat=True)
-    #choices = StudyGroup.available_subjects('title', flat=True)
-    course = serializers.ChoiceField(label='Курс', choices=choices)
-    '''
-    study_group = StudyGroupSerializer()
-    class Meta:
-        model = Student
-        fields = ('study_group',)
-    
-    def create(self, validated_data):
-        #course_pk = validated_data['id']
-        #course = Course.objects.get(pk=course_pk)
-        
-        '''
-        if course in study_group.available_subjects.all():
-            practice_category = PracticeCategory.objects.get(course=course)
-            task_list = PracticeTask.objects.filter(practice_category=practice_category)
-            return task_list
-        '''
-        return PracticeTask.objects.none()
-        #return PracticeTask.objects.all()
-    
-    def update(self, instance, validated_data):
-        print('ssss\n')
-        print(validated_data)
-        print(validated_data)
-        print(validated_data)
-        print('ssss\n')
-        '''
-        student = Student.objects.get(id = instance.id)
-        study_group = student.study_group
-        course = validated_data.course
-        #instance.complexity = validated_data.get('complexity', instance.complexity)
-        if course in study_group.available_subjects.all():
-            practice_category = PracticeCategory.objects.get(course=course)
-            task_list = PracticeTask.objects.filter(practice_category=practice_category)
-            return task_list
-        '''
-        return PracticeTask.objects.none()

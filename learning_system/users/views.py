@@ -1,12 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic.base import View
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView
 from rest_framework import viewsets
+from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import action
+from rest_framework.parsers import JSONParser
+from django.shortcuts import (get_object_or_404, redirect, render,
+                              render_to_response)
 
 from .models import StudentProgress, UserComplaint, ReviewsOnTeacher, Student, Teacher, StudyGroup
 from .serializers import StudentCreateSerializer, \
@@ -25,6 +29,7 @@ from .serializers import StudentCreateSerializer, \
     SetStudentGroupSerializer, \
     GetTaskListSerializer
 from .permission import IsStudent, IsTeacherOrAdmin
+from learning_system.practice.models import PracticeCategory, PracticeTask
 
 
 class StudyGroupCreateView(generics.CreateAPIView):
@@ -143,7 +148,14 @@ class SetGroupView(generics.CreateAPIView):
     serializer_class = SetStudentGroupSerializer  
     permission_classes = [IsTeacherOrAdmin]
 
-class GetTaskListView(viewsets.ModelViewSet):
+class GetTaskListView(generics.ListAPIView):
     serializer_class = GetTaskListSerializer
-    queryset = Student.objects
+    queryset = PracticeTask.objects
+    permission_classes = [IsStudent]
     
+    def get(self, request):
+            student_progress = get_object_or_404(StudentProgress, student = request.user)
+            practice_task = student_progress.practice_task
+            serializer = self.serializer_class(practice_task)
+            return Response(serializer.data)
+

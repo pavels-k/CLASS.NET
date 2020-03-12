@@ -7,7 +7,7 @@ app_name = 'users'
 
 router = routers.DefaultRouter()
 router.register(r'student_move', views.StudentViewSet)
-router.register(r'get_task_list_for_student', views.GetTaskListView)    
+#router.register(r'get_task_list_for_student', views.GetTaskListView)    
 
 urlpatterns = [
     url(r'group/create/$', views.StudyGroupCreateView.as_view(), name="create_group"),
@@ -26,7 +26,8 @@ urlpatterns = [
     url(r'user_complaint/list$', views.UserComplaintView.as_view(), name="user_complaint_list"),
     url(r'reviews_on_teacher/list$', views.ReviewsOnTeacherView.as_view(), name="reviews_on_teacher_list"),
     url(r'set_group_for_student$', views.SetGroupView.as_view(), name="set_group_for_student"),
-    #url(r'get_task_list_for_student$', views.GetTaskListView.as_view(), name='get_task_list_for_student'),    
+    url(r'get_task_list_for_student$', views.GetTaskListView.as_view(), name='get_task_list_for_student'),    
     url('', include(router.urls)),
+    #url(r'nnnn/', views.get_task_for_user_in_subject, name='post_list'),
 ]
 # StudentViewSet
