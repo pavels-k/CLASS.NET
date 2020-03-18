@@ -61,3 +61,25 @@ class UserModelTest(TestCase):
         reviewsonteacher_1 = ReviewsOnTeacher.objects.create(student=student_1, reviews='review #1', fullname='Ivan')
         self.assertEqual(reviewsonteacher_1.reviews == 'review #1', True)
 
+    def test_student_create1(self):
+        group = StudyGroup.objects.create(name='group')
+        student_1 = Student.objects.create(username='student_1', study_group=group)
+        student_2 = Student.objects.create(username='student_2', study_group=group)
+        students = Student.objects.filter(study_group=group)
+        print(students[0].study_group)
+        print(students)
+        print(students)
+
+        course_1 = Course.objects.create()
+        course_2 = Course.objects.create()
+        practicecategory_1 = PracticeCategory.objects.create(course=course_1)
+        practicecategory_2 = PracticeCategory.objects.create(course=course_2)
+        practicetask_1 = PracticeTask.objects.create(category=practicecategory_1)
+        practicetask_2 = PracticeTask.objects.create(category=practicecategory_2)
+        studentprogress_1 = StudentProgress.objects.create(student=student_1, score=0, practice_task=practicetask_1)
+        studentprogress_2 = StudentProgress.objects.create(student=student_1, score=0, practice_task=practicetask_2)
+
+        study_groups = StudentProgress.objects.filter(student = students)
+        #print(study_groups)
+
+        self.assertEqual(Student.objects.exists(), True)

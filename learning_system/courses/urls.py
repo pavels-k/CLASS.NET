@@ -1,7 +1,7 @@
 
 from django.conf.urls import url
 
-from . import views
+from learning_system.courses import views
 
 app_name = 'courses'
 

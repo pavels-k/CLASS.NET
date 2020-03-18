@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from learning_system.courses.serializers import CourseCreateSerializer
-from .models import TheoryCategory, TheoryPost
+from learning_system.theory.models import TheoryCategory, TheoryPost
 
 
 class TheoryCategoryCreateSerializer(serializers.ModelSerializer):

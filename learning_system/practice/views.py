@@ -1,7 +1,7 @@
 from rest_framework import generics
 
-from .models import TaskUserData, PracticeTask, PracticeCategory
-from .serializers import \
+from learning_system.practice.models import TaskUserData, PracticeTask, PracticeCategory
+from learning_system.practice.serializers import \
     PracticeCategoryCreateSerializer, \
     PracticeTaskCreateSerializer, \
     TaskUserDataCreateSerializer, \

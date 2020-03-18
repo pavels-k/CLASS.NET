@@ -1,7 +1,7 @@
 from rest_framework import generics
 
-from .models import TheoryCategory, TheoryPost
-from .serializers import TheoryCategoryCreateSerializer, \
+from learning_system.theory.models import TheoryCategory, TheoryPost
+from learning_system.theory.serializers import TheoryCategoryCreateSerializer, \
     TheoryPostCreateSerializer, \
     TheoryCategorySerializer, \
     TheoryPostSerializer

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from learning_system.courses.serializers import CourseCreateSerializer
-from .models import PracticeCategory, PracticeTask, TaskUserData
+from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
 from learning_system.users.models import StudyGroup, Student
 from learning_system.courses.models import Course
 

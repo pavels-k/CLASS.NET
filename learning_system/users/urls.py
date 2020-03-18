@@ -6,8 +6,9 @@ from learning_system.users import views
 app_name = 'users'
 
 router = routers.DefaultRouter()
-router.register(r'student_move', views.StudentViewSet)
-#router.register(r'get_task_list_for_student', views.GetTaskListView)    
+#router.register(r'student_move', views.StudentViewSet)
+#router.register(r'get/results/studygroup/', views.GroupSelectView)    
+#router.register(r'get/results/students', views.StudentSelectView)    
 
 urlpatterns = [
     url(r'group/create/$', views.StudyGroupCreateView.as_view(), name="create_group"),
@@ -25,9 +26,11 @@ urlpatterns = [
     url(r'student_progress/list$', views.StudentProgressView.as_view(), name="student_progress_list"),
     url(r'user_complaint/list$', views.UserComplaintView.as_view(), name="user_complaint_list"),
     url(r'reviews_on_teacher/list$', views.ReviewsOnTeacherView.as_view(), name="reviews_on_teacher_list"),
-    url(r'set_group_for_student$', views.SetGroupView.as_view(), name="set_group_for_student"),
     url(r'get_task_list_for_student$', views.GetTaskListView.as_view(), name='get_task_list_for_student'),    
-    url('', include(router.urls)),
-    #url(r'nnnn/', views.get_task_for_user_in_subject, name='post_list'),
+    url(r'set_group_for_student/(?P<pk>\d+)$', views.SetGroupView.as_view(), name="set_group_for_student"),
+    url(r'add_study_group_to_course/(?P<pk>\d+)$', views.AddCourseToStudyGroupView.as_view(), name='add_study_group_to_course'),    
+    url(r'get/results/study_group/(?P<pk>\d+)$', views.GroupSelectView.as_view(), name='Study_Group_Result_List'),    
+    url(r'students/get_progress/$', views.StudentResultList.as_view(), name='Student_Result_List'),    
+    url('', include(router.urls))
 ]
-# StudentViewSet
+#StudentResultList

@@ -1,7 +1,7 @@
 from rest_framework import generics
 
 from learning_system.courses.models import Course
-from .serializers import CourseCreateSerializer
+from learning_system.courses.serializers import CourseCreateSerializer
 
 
 class CourseCreateView(generics.CreateAPIView):

@@ -8,7 +8,7 @@
             "name": "Python: Current File (Integrated Terminal)",
             "type": "python",
             "request": "launch",
-            "program": "C:/Users/Паша/Downloads/Диплом/работа/CLASS.NET/manage.py",
+            "program": "C:/Users/Паша/Desktop/git/CLASS.NET/manage.py",
             "console": "integratedTerminal",
             "args": [
                 "test"

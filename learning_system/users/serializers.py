@@ -1,10 +1,14 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
+from django.shortcuts import (get_object_or_404, redirect, render,
+                              render_to_response)
+from django.urls import reverse
 
 from learning_system.practice.serializers import PracticeTaskSerializer
-from .models import Student, Teacher, StudyGroup, StudentProgress, UserComplaint, ReviewsOnTeacher
+from learning_system.users.models import Student, Teacher, StudyGroup, StudentProgress, UserComplaint, ReviewsOnTeacher
 from learning_system.courses.models import Course
 from learning_system.practice.models import PracticeCategory, PracticeTask
+from learning_system.courses.serializers import CourseCreateSerializer
 UserModel = get_user_model()
 
 
@@ -42,13 +46,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class StudentCreateSerializer(UserCreateSerializer):
     class Meta:
         model = Student
-        #fields = ('id', 'username', 'password', 'password_confirmation', 'study_group')
         fields = ('id', 'username', 'password', 'password_confirmation')
 
     def create(self, validated_data):
         student = Student.objects.create(
             username=validated_data['username']
-            #study_group=validated_data['study_group']
         )
         student.set_password(validated_data['password'])
         student.save()
@@ -121,12 +123,12 @@ class StudentMoveSerializer(serializers.ModelSerializer):
         fields = ('id', 'study_group')
 
 class SetStudentGroupSerializer(serializers.ModelSerializer):
-    choices = Student.objects.values_list('pk', flat=True)
-    id = serializers.ChoiceField(label='ID студента', choices=choices)
-
+    #choices = Student.objects.values_list('pk', flat=True)
+    #id = serializers.ChoiceField(label='ID студента', choices=choices)
+    username = serializers.CharField(label='username', read_only=True)
     class Meta:
         model = Student
-        fields = ('id', 'study_group')
+        fields = ( 'study_group', 'username')
     
     def create(self, validated_data):
         pk = validated_data['id']
@@ -141,4 +143,100 @@ class GetTaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PracticeTask
         fields = ('__all__')
+        
+
+class ResultSerializer(serializers.ModelSerializer):
+    student = StudentCreateSerializer()
+    class Meta:
+        model = StudentProgress
+        fields = [ 'student', 'score', 'answers', 'practice_task']
+        extra_kwargs = {
+                'score': {
+                    'required': False,
+                 },
+                 'answers': {
+                    'required': False,
+                 },
+                 'practice_task': {
+                    'required': False,
+                 }
+        }
+    '''
+    def create(self, validated_data):
+        student = validated_data['student']
+        student_progress = get_object_or_404(StudentProgress, student = student)
+        student_progress.save()
+        return student_progress
+    '''
+
+
+
+class StudentSelectSerializer(serializers.ModelSerializer):
+    choices = Student.objects.values_list('study_group', flat=True)
+    study_group = serializers.ChoiceField(label='ID группы', choices=choices)
+    class Meta:
+        model = Student
+        fields = ['study_group',]
+
+
+
+class AddCourseToStudyGroup(serializers.ModelSerializer):
+    #choices = StudyGroup.objects.values_list('pk', flat=True)
+    #id = serializers.ChoiceField(label='ID Группы', choices=choices)
+    name = serializers.CharField(label='Name of Group', read_only=True)
+    class Meta:
+        model = StudyGroup
+        fields = ['available_subjects', 'name']
+    
+    def create(self, validated_data):
+        pk = validated_data['id']
+        study_group = StudyGroup.objects.get(pk=pk)
+        course = validated_data['available_subjects']
+        study_group.available_subjects.set(course)
+        study_group.save()
+        return study_group
+
+class StudyGroupSelectionSerializer(serializers.ModelSerializer):
+    #available_subjects = CourseCreateSerializer(many=True)
+    choices = Course.objects.values_list('pk', flat=True)
+    available_subjects = serializers.ChoiceField(label='ID Группы', choices=choices)
+    class Meta:
+        model = StudyGroup
+        fields = ['available_subjects',]
+
+class CourseProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentProgress
+        exclude = ()
+
+class ProgressSerializer(serializers.ModelSerializer):
+    progress = serializers.SerializerMethodField()
+    def get_progress(self,obj):
+        course = self.context.get("course")
+        #print(course)
+        if course:
+            practice_category = PracticeCategory.objects.filter(course = course)
+            #print(practice_category[0])
+            practice_tasks = PracticeTask.objects.filter(category = practice_category[0])
+            #print(practice_tasks)
+            student_progress = StudentProgress.objects.none()
+            for practice_task in practice_tasks:
+                student_progress |= StudentProgress.objects.filter(practice_task = practice_task)
+            #student_progress = StudentProgress.objects.filter(practice_task = practice_task)
+            print(student_progress)
+            return CourseProgressSerializer(student_progress, many = True).data
+        return None
+
+    class Meta:
+        model = Student
+        fields = ('first_name', 'last_name', 'progress')
+        #fields = ('first_name', 'last_name',)
+    
+    
+    '''
+    study_group = StudyGroupSelectionSerializer()
+    class Meta:
+        model = Student
+        fields = ['student', 'study_group']
+    '''
 

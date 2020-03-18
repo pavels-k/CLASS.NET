@@ -4,6 +4,7 @@ from django.views.generic.base import View
 from rest_framework import generics, status
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
+from django.forms.models import model_to_dict
 from rest_framework.views import APIView
 from rest_framework import viewsets
 from django.contrib.auth.decorators import login_required
@@ -12,8 +13,8 @@ from rest_framework.parsers import JSONParser
 from django.shortcuts import (get_object_or_404, redirect, render,
                               render_to_response)
 
-from .models import StudentProgress, UserComplaint, ReviewsOnTeacher, Student, Teacher, StudyGroup
-from .serializers import StudentCreateSerializer, \
+from learning_system.users.models import StudentProgress, UserComplaint, ReviewsOnTeacher, Student, Teacher, StudyGroup
+from learning_system.users.serializers import StudentCreateSerializer, \
     TeacherCreateSerializer, \
     UserCreateSerializer, \
     StudyGroupCreateSerializer, \
@@ -27,9 +28,15 @@ from .serializers import StudentCreateSerializer, \
     StudentSerializer, \
     StudentMoveSerializer, \
     SetStudentGroupSerializer, \
-    GetTaskListSerializer
-from .permission import IsStudent, IsTeacherOrAdmin
+    GetTaskListSerializer, \
+    ResultSerializer, \
+    StudentSelectSerializer, \
+    AddCourseToStudyGroup, \
+    StudyGroupSelectionSerializer, \
+    ProgressSerializer
+from .permission import IsStudent, IsTeacherOrAdmin, IsAdminUser
 from learning_system.practice.models import PracticeCategory, PracticeTask
+from learning_system.courses.models import Course
 
 
 class StudyGroupCreateView(generics.CreateAPIView):
@@ -124,28 +131,16 @@ class ReviewsOnTeacherView(generics.ListAPIView):
     queryset = ReviewsOnTeacher.objects
 
 
-
+'''
 class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentMoveSerializer
     queryset = Student.objects
     permission_classes = [IsTeacherOrAdmin]
-
-    '''
-    @action(detail=True, methods=['POST', 'GET'])
-    def move_to_group(self, request, pk=None):
-        student = self.get_object()
-        serializer = StudentMoveSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            #student = serializer.save()
-            return Response({'status': 'student added'})
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-    '''
+'''
     
-class SetGroupView(generics.CreateAPIView):
-    serializer_class = SetStudentGroupSerializer  
+class SetGroupView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SetStudentGroupSerializer
+    queryset = Student.objects
     permission_classes = [IsTeacherOrAdmin]
 
 class GetTaskListView(generics.ListAPIView):
@@ -158,4 +153,59 @@ class GetTaskListView(generics.ListAPIView):
             practice_task = student_progress.practice_task
             serializer = self.serializer_class(practice_task)
             return Response(serializer.data)
+'''
+class GetResultsListView(generics.ListAPIView):
+    serializer_class = ResultSerializer
+    permission_classes = [IsTeacherOrAdmin]
+'''
+    
+class GroupSelectView(generics.ListAPIView):
+    serializer_class = StudentSelectSerializer
+    queryset = Student.objects
+    permission_classes = [IsTeacherOrAdmin]
+    def list(self, request, pk):       
+        id = pk
+        if id == 'None':
+            content = {'You did not select a group'}
+            return Response(content, status=status.HTTP_404_NOT_FOUND)
+        study_group = StudyGroup.objects.filter(id = id)[:1]
+        students = Student.objects.filter(study_group = study_group)
+        students_progress = StudentProgress.objects.none()
+        for student in students:
+            students_progress |= StudentProgress.objects.filter(student = student)
+        serializer = ResultSerializer(students_progress, many = True) 
+        return Response(serializer.data)
 
+    
+
+#AddCourseToStudyGroup
+
+class AddCourseToStudyGroupView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AddCourseToStudyGroup
+    queryset = StudyGroup.objects
+    permission_classes = [IsAdminUser]
+    #def post(self, request):
+'''
+class StudentSelectView(generics.CreateAPIView):
+    serializer_class = StudyGroupSelectionSerializer
+    queryset = StudyGroup.objects.all()
+'''
+class StudentResultList(generics.ListAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [IsTeacherOrAdmin]
+    
+    def list(self, request):
+        queryset = self.get_queryset()
+        group = self.request.query_params.get('group', None)
+        course = self.request.query_params.get('course', None)
+        if group and course:
+            course = get_object_or_404(Course, pk = course)
+            group = get_object_or_404(StudyGroup, pk = group)
+            if course in group.available_subjects.all():
+                queryset = queryset.filter(study_group = group)
+            else:
+                queryset = queryset.none()
+            print(queryset)
+            serializer = ProgressSerializer(queryset, many = True, context = {'course': course})
+        return Response(serializer.data)

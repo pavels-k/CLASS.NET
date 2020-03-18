@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from . import views
+from learning_system.practice import views
 
 app_name = 'practice'
 
