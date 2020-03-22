@@ -1,3 +1,9 @@
 {
-    "python.pythonPath": "C:\\Users\\Паша\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+    "python.pythonPath": "C:\\Users\\Паша\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.formatting.provider": "yapf",
+    "python.autoComplete.extraPaths": ["C:/Users/Паша/Desktop/git/CLASS.NET/"],
+    "python.linting.enabled": true,
+    "python.linting.pylintPath": "pylint",
+    "editor.formatOnSave": true,
+    "python.linting.pylintEnabled": true,
 }

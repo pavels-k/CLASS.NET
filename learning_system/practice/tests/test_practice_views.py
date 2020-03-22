@@ -17,20 +17,23 @@ class UpdatePracticeTask(APITestCase):
         course_1 = Course.objects.create(title='Математический анализ')
         practice_category_1 = PracticeCategory.objects.create(course=self.course_1)   
         response = self.client.post(reverse('practice:create_practice_task'), \
-            data = {'content':"Текст Практического задания", 'complexity': "Сложный", 'task_type':"Тест", \
+            data = {'content':"Текст Практического задания", 'complexity': "Сложный", 'task_type':1, \
                 'category': practice_category_1.pk})
+        #print(response.data)
         self.assertEqual(response.status_code == 201, True)
     
     def test_update_practice_task(self):
         data = {
             "content": "Текст Практического задания",
             "complexity": "Сложный",
-            "task_type": "Тест"
+            "task_type": 1
         }
         response = self.client.put(reverse('practice:practice_task_update', kwargs={'pk': self.practicetask_1.pk}),\
-                                   data=data) 
+                                   data=data)
+        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_practice_task(self):
         response = self.client.delete(reverse('practice:practice_task_update', kwargs={'pk': self.practicetask_1.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        

@@ -13,7 +13,5 @@ urlpatterns = [
     url(r'practice_task/list$', views.PracticeTaskView.as_view(), name="practice_task_list"),
     url(r'task_user_data/list$', views.TaskUserDataView.as_view(), name="task_user_data_list"),
     url(r'practice_task/update/(?P<pk>\d+)$', views.PracticeTaskUpdateDeleteView.as_view(), name="practice_task_update"),
-    #url(r'practice_task/student/list$', views.GetPracticeForStudents.as_view(), name="practice_task_student_list"),    
     url(r'get_task_list_for_student$', views.GetTaskListView.as_view(), name='get_task_list_for_student')
 ]
-# GetPracticeForStudents

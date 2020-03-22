@@ -66,9 +66,9 @@ class UserModelTest(TestCase):
         student_1 = Student.objects.create(username='student_1', study_group=group)
         student_2 = Student.objects.create(username='student_2', study_group=group)
         students = Student.objects.filter(study_group=group)
-        print(students[0].study_group)
-        print(students)
-        print(students)
+        #print(students[0].study_group)
+        #print(students)
+        #print(students)
 
         course_1 = Course.objects.create()
         course_2 = Course.objects.create()

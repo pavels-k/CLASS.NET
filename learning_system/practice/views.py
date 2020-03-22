@@ -8,7 +8,6 @@ from learning_system.practice.serializers import \
     PracticeCategorySerializer, \
     PracticeTaskSerializer, GetTaskListSerializer, \
     TaskUserDataSerializer
-from learning_system.users.serializers import StudentProgressSerializer
 from learning_system.users.models import StudentProgress
 from learning_system.users.models import StudyGroup, Student
 from learning_system.courses.models import Course
@@ -42,17 +41,8 @@ class TaskUserDataView(generics.ListAPIView):
 class PracticeTaskUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PracticeTaskSerializer
     queryset = PracticeTask.objects.all()
-'''
-class GetPracticeForStudents(generics.ListAPIView):
-    serializer_class = PracticeTaskSerializer
-    queryset = PracticeTask.objects.all()
-    
-    def task_for_students(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            student_id = request.user.get('id')
-'''
+
 class GetTaskListView(generics.CreateAPIView):
     serializer_class = GetTaskListSerializer
-    #queryset = Student.objects.all()
+
             
