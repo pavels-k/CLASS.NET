@@ -33,6 +33,7 @@ urlpatterns = [
     #url(r'user_complaint/create/$', user_api.UserComplaintCreateView.as_view(), name="create_user_complaint"),
     #url(r'reviews_on_teacher/create/$', student_api.ReviewsOnTeacherCreateView.as_view(), name="create_reviews_on_teacher"),
 
+
     #url(r'group/list$', student_api.StudyGroupView.as_view(), name="group_list"),
     #url(r'student/list$', student_api.StudentView.as_view(), name="student_list"),
     #url(r'teacher/list$', teacher_api.TeacherView.as_view(), name="teacher_list"),

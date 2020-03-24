@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\Паша\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.pythonPath": "C:\\Users\\Павел\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe",
     "python.formatting.provider": "yapf",
     "python.autoComplete.extraPaths": ["C:/Users/Паша/Desktop/git/CLASS.NET/"],
     "python.linting.enabled": true,
