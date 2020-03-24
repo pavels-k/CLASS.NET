@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from learning_system.users.models import StudyGroup, UserComplaint
+from dry_rest_permissions.generics import DRYPermissionsField
 
 UserModel = get_user_model()
 
@@ -58,14 +59,15 @@ class UserComplaintCreateSerializer(serializers.ModelSerializer):
 class UserComplaintSerializer(UserComplaintCreateSerializer):
     user = UserCreateSerializer()
 
+
+
 #20
 class AddCourseToStudyGroup(serializers.ModelSerializer):
     name = serializers.CharField(label='Name of Group', read_only=True)
-
     class Meta:
         model = StudyGroup
         fields = ['available_subjects', 'name']
-
+    '''
     def create(self, validated_data):
         pk = validated_data['id']
         study_group = StudyGroup.objects.get(pk=pk)
@@ -73,3 +75,4 @@ class AddCourseToStudyGroup(serializers.ModelSerializer):
         study_group.available_subjects.set(course)
         study_group.save()
         return study_group
+    '''

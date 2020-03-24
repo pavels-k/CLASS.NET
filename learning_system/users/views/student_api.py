@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, redirect
 from learning_system.users.models import StudentProgress, ReviewsOnTeacher, Student, StudyGroup
@@ -6,6 +6,7 @@ from learning_system.users.views.user_api import UserCreateView
 from learning_system.practice.models import PracticeCategory, PracticeTask
 from learning_system.users.permission import IsStudent, IsAdminUser
 from learning_system.users.models import Student, StudyGroup, StudentProgress, ReviewsOnTeacher
+from rest_framework.decorators import action
 
 from learning_system.users.serializers.student import StudentCreateSerializer, \
     StudyGroupCreateSerializer, \
@@ -26,6 +27,7 @@ class StudyGroupCreateView(viewsets.ModelViewSet):
 class StudyGroupView(viewsets.ReadOnlyModelViewSet):
     serializer_class = StudyGroupListSerializer
     queryset = StudyGroup.objects.all()
+ 
 
 #6
 class StudentCreateView(UserCreateView):

@@ -12,7 +12,8 @@ from learning_system.users.serializers.user import UserCreateSerializer , \
     UserComplaintCreateSerializer, \
     UserComplaintSerializer, \
     AddCourseToStudyGroup
-
+from dry_rest_permissions.generics import DRYPermissions
+from rest_framework.decorators import action
 
 #3
 class UserLogoutView(View):
@@ -69,7 +70,20 @@ class UserComplaintView(viewsets.ReadOnlyModelViewSet):
 
 
 #19
-class AddCourseToStudyGroupView(viewsets.ModelViewSet):
+class StudyGroupView(viewsets.ModelViewSet):
     serializer_class = AddCourseToStudyGroup
     queryset = StudyGroup.objects.all()
     permission_classes = [IsAdminUser]
+    
+    @action(detail=True,
+            methods=['put'])
+    def add_course(self, request, pk=None):
+        try:
+            study_group = StudyGroup.objects.get(pk=pk)
+        except StudyGroup.DoesNotExist:
+            return Response('Not found studygroup', status=status.HTTP_400_BAD_REQUEST)        
+        course = request.data.get('available_subjects')
+        study_group.available_subjects.set(course)
+        study_group.save()
+        serializer = AddCourseToStudyGroup(study_group)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -1,4 +1,6 @@
 from django.test import TestCase
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -12,21 +14,27 @@ from learning_system.practice.models import PracticeCategory, PracticeTask, Task
 from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, \
     StudyGroup, User
 from learning_system.users.serializers.student import StudentListSerializer, GetTaskListSerializer
-
-
+User = get_user_model()
 
 class TestBase(APITestCase):
-    def _create_student(self):
+    def test_create_student(self):
         group_1 = StudyGroup.objects.create()
+        data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
+                'study_group': group_1.pk}
 
-        response = self.client.post('/core/v1/users/student/create/', \
+        response = self.client.post(reverse('users:student-list'), data = data, format='json')
+        '''
+        response = self.client.post('/core/v1/users/students/', \
             data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
                 'study_group': group_1.pk})
-        self.assertEqual(response.status_code == 201, True)
+        '''
 
+        print(response.content)
+        self.assertEqual(response.status_code == 201, True)
+'''
     def setUp(self):
         self._create_student()
-
+    
     def test_user_login(self):
         resp = self.client.post(reverse('users:login_user'),
                                 data={
@@ -49,9 +57,9 @@ class UserSignOutViewTest(TestBase):
 class GetAllStudentsTest(TestCase):
     def _create_student(self):
         group_1 = StudyGroup.objects.create()
-        response = self.client.post('/core/v1/users/student/create/', \
+        response = self.client.post(reverse('student', \
             data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
-                'study_group': group_1.pk})
+                'study_group': group_1.pk}))
 
         self.assertEqual(response.status_code == 201, True)
 
@@ -167,3 +175,4 @@ class GetAllStudentsTest(TestCase):
         response = c.get('/core/v1/users/students/get_progress/?&group=' +
                          str(group_3.pk) + '&course=' + str(course_2.pk))
         self.assertEqual(response.status_code, 200)
+'''

@@ -40,12 +40,12 @@ INSTALLED_APPS = [
     'learning_system.theory.apps.TheoryConfig',
     'learning_system.users.apps.UsersConfig',
     'rest_framework',
-    'rest_framework.authtoken',
-    # 'rest_auth',
+    'dry_rest_permissions',
     'django.contrib.sites',
 ]
 SITE_ID = 2
 AUTH_USER_MODEL = 'users.User'
+
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
