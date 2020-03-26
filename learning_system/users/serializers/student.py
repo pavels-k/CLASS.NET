@@ -28,27 +28,23 @@ class StudyGroupCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyGroup
         fields = ('id', 'name', 'available_subjects')
-#5
-class StudyGroupListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StudyGroup
-        fields = ('id', 'name', 'available_subjects')
+
+
 #6
 class StudentListSerializer(serializers.ModelSerializer):
     study_group = StudyGroupCreateSerializer()
+
     class Meta:
         model = Student
         fields = ('id', 'username', 'study_group')
+
+
 #9
 class StudentProgressCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProgress
         fields = ('student', 'score', 'answers', 'practice_task')
 
-#10
-class StudentProgressSerializer(StudentProgressCreateSerializer):
-    student = StudentCreateSerializer()
-    practice_task = PracticeTaskSerializer()
 
 #13
 class ReviewsOnTeacherCreateSerializer(serializers.ModelSerializer):
@@ -56,20 +52,12 @@ class ReviewsOnTeacherCreateSerializer(serializers.ModelSerializer):
         model = ReviewsOnTeacher
         fields = ('student', 'reviews', 'fullname')
 
-#14
-class ReviewsOnTeacherSerializer(ReviewsOnTeacherCreateSerializer):
-    student = StudentCreateSerializer()
-#17
-class GetTaskListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PracticeTask
-        fields = ('__all__')
 
-#22
 class CourseProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProgress
         exclude = ()
+
 
 #23
 class ProgressSerializer(serializers.ModelSerializer):
@@ -91,3 +79,14 @@ class ProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ('first_name', 'last_name', 'progress')
+
+class StudentUpdateGroupeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('study_group',)
+
+class ResultSerializer(serializers.ModelSerializer):
+    student = StudentCreateSerializer() 
+    class Meta:
+        model = StudentProgress
+        fields = ['student', 'score', 'answers', 'practice_task']

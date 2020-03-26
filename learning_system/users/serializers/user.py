@@ -5,7 +5,7 @@ from dry_rest_permissions.generics import DRYPermissionsField
 
 UserModel = get_user_model()
 
-#1
+
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
@@ -24,7 +24,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
                 'There was typing wrong login or password')
         return data
 
-#2
+
 class UserCreateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(label='Логин')
     first_name = serializers.CharField(label='Имя')
@@ -49,30 +49,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Passwords do not match!")
         return data
 
-#11
+
 class UserComplaintCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserComplaint
         fields = ('user', 'complaints')
 
-#12
-class UserComplaintSerializer(UserComplaintCreateSerializer):
-    user = UserCreateSerializer()
-
-
-
-#20
-class AddCourseToStudyGroup(serializers.ModelSerializer):
-    name = serializers.CharField(label='Name of Group', read_only=True)
-    class Meta:
-        model = StudyGroup
-        fields = ['available_subjects', 'name']
-    '''
-    def create(self, validated_data):
-        pk = validated_data['id']
-        study_group = StudyGroup.objects.get(pk=pk)
-        course = validated_data['available_subjects']
-        study_group.available_subjects.set(course)
-        study_group.save()
-        return study_group
-    '''

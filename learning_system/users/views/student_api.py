@@ -1,75 +1,85 @@
-from rest_framework import generics, viewsets, status
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from learning_system.users.models import StudentProgress, ReviewsOnTeacher, Student, StudyGroup
 from learning_system.users.views.user_api import UserCreateView
-from learning_system.practice.models import PracticeCategory, PracticeTask
-from learning_system.users.permission import IsStudent, IsAdminUser
+from learning_system.users.permission import IsStudent, IsAdminUser, IsTeacherOrAdmin
 from learning_system.users.models import Student, StudyGroup, StudentProgress, ReviewsOnTeacher
-from rest_framework.decorators import action
+from learning_system.courses.models import Course
 
 from learning_system.users.serializers.student import StudentCreateSerializer, \
     StudyGroupCreateSerializer, \
-    StudyGroupListSerializer, \
     StudentProgressCreateSerializer, \
     ReviewsOnTeacherCreateSerializer, \
-    StudentProgressSerializer, \
-    ReviewsOnTeacherSerializer, \
     StudentListSerializer, \
-    GetTaskListSerializer, \
-    ProgressSerializer
+    ProgressSerializer, \
+    StudentUpdateGroupeSerializer, \
+    ResultSerializer
 
-#1
-class StudyGroupCreateView(viewsets.ModelViewSet):
+
+class StudyGroupView(viewsets.ModelViewSet):
     serializer_class = StudyGroupCreateSerializer
     queryset = StudyGroup.objects.all()
-#2
-class StudyGroupView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = StudyGroupListSerializer
-    queryset = StudyGroup.objects.all()
- 
 
-#6
-class StudentCreateView(UserCreateView):
+class StudentView(UserCreateView):
     serializer_class = StudentCreateSerializer
     queryset = Student.objects.all()
-#7
-class StudentView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = StudentListSerializer
-    queryset = Student.objects.all()
+    action_serializers = {
+        'list': StudentListSerializer,
+        'retrieve': StudentListSerializer,
+        'create': StudentCreateSerializer,
+        'update': StudentUpdateGroupeSerializer,
+    }
 
-#10
-class StudentProgressCreateView(viewsets.ModelViewSet):
+    def get_serializer_class(self):
+        if hasattr(self, 'action_serializers'):
+            if self.action in self.action_serializers:
+                return self.action_serializers[self.action]
+
+        return self.serializer_class
+
+
+    @action(detail=False, methods = ['get'])
+    def list_task(self, request):
+        queryset = self.get_queryset()
+        group = self.request.query_params.get('group', None)
+        course = self.request.query_params.get('course', None)
+        if group and course:
+            course = get_object_or_404(Course, pk=course)
+            group = get_object_or_404(StudyGroup, pk=group)
+            if course in group.available_subjects.all():
+                queryset = queryset.filter(study_group=group)
+            else:
+                queryset = queryset.none()
+            serializer = ProgressSerializer(queryset,
+                                            many=True,
+                                            context={'course': course})
+        return Response(serializer.data)
+
+
+class StudentProgressView(viewsets.ModelViewSet):
     serializer_class = StudentProgressCreateSerializer
     queryset = StudentProgress.objects.all()
     permission_classes = [IsAdminUser]
 
-#11
-class StudentProgressView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = StudentProgressSerializer
-    queryset = StudentProgress.objects.all()
-
-#17
-class GetTaskListView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = GetTaskListSerializer
-    queryset = PracticeTask.objects.all()
-    permission_classes = [IsStudent]
-
-    def list(self, request):
-        student_progress = get_object_or_404(StudentProgress,
-                                             student=request.user)
-        practice_task = student_progress.practice_task
-        serializer = self.serializer_class(practice_task)
+    @action(detail=True, methods=['get'], permission_classes=[IsTeacherOrAdmin])
+    def list_study_group_results(self, request, pk):
+        id = pk
+        if id == 'None':
+            content = {'You did not select a group'}
+            return Response(content, status=status.HTTP_404_NOT_FOUND)
+        study_group = StudyGroup.objects.filter(id=id)[:1]
+        students = Student.objects.filter(study_group=study_group)
+        students_progress = StudentProgress.objects.none()
+        for student in students:
+            students_progress |= StudentProgress.objects.filter(
+                student=student)
+        serializer = ResultSerializer(students_progress,
+                                      many=True)  # исправить
         return Response(serializer.data)
 
 
-
-#14
 class ReviewsOnTeacherCreateView(viewsets.ModelViewSet):
     serializer_class = ReviewsOnTeacherCreateSerializer
-    queryset = ReviewsOnTeacher.objects.all()
-
-#15
-class ReviewsOnTeacherView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = ReviewsOnTeacherSerializer
     queryset = ReviewsOnTeacher.objects.all()

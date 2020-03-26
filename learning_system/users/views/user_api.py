@@ -9,20 +9,18 @@ from learning_system.users.permission import IsAdminUser
 from learning_system.users.models import StudyGroup, UserComplaint
 from learning_system.users.serializers.user import UserCreateSerializer , \
     UserLoginSerializer, \
-    UserComplaintCreateSerializer, \
-    UserComplaintSerializer, \
-    AddCourseToStudyGroup
+    UserComplaintCreateSerializer
 from dry_rest_permissions.generics import DRYPermissions
 from rest_framework.decorators import action
 
-#3
+
 class UserLogoutView(View):
     def get(self, request):
         logout(request)
         return redirect(reverse('users:login_user'))
 
 
-#4
+
 class UserLoginView(APIView):
     serializer_class = UserLoginSerializer
 
@@ -40,7 +38,7 @@ class UserLoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#5
+
 class UserCreateView(viewsets.ModelViewSet):
     serializer_class = UserCreateSerializer
 
@@ -57,33 +55,7 @@ class UserCreateView(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#12
-class UserComplaintCreateView(viewsets.ModelViewSet):
+
+class UserComplaintView(viewsets.ModelViewSet):
     serializer_class = UserComplaintCreateSerializer
     queryset = UserComplaint.objects.all()
-
-
-#13
-class UserComplaintView(viewsets.ReadOnlyModelViewSet):
-    serializer_class = UserComplaintSerializer
-    queryset = UserComplaint.objects.all()
-
-
-#19
-class StudyGroupView(viewsets.ModelViewSet):
-    serializer_class = AddCourseToStudyGroup
-    queryset = StudyGroup.objects.all()
-    permission_classes = [IsAdminUser]
-    
-    @action(detail=True,
-            methods=['put'])
-    def add_course(self, request, pk=None):
-        try:
-            study_group = StudyGroup.objects.get(pk=pk)
-        except StudyGroup.DoesNotExist:
-            return Response('Not found studygroup', status=status.HTTP_400_BAD_REQUEST)        
-        course = request.data.get('available_subjects')
-        study_group.available_subjects.set(course)
-        study_group.save()
-        serializer = AddCourseToStudyGroup(study_group)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)

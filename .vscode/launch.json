@@ -9,6 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "C:/Users/Паша/Desktop/git/CLASS.NET/manage.py",
+            "program": "C:/Users/Павел/Documents/GitHub/CLASS.NET/manage.py",
             "console": "integratedTerminal",
             "args": [
                 "test"
@@ -41,9 +42,7 @@
             "program": "${workspaceFolder}/manage.py",
             "console": "integratedTerminal",
             "args": [
-                "runserver",
-                "--noreload",
-                "--nothreading"
+                "test"
             ],
             "django": true
         },

@@ -13,28 +13,23 @@ from learning_system.courses.models import Course
 from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
 from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, \
     StudyGroup, User
-from learning_system.users.serializers.student import StudentListSerializer, GetTaskListSerializer
+from learning_system.users.serializers.student import StudentListSerializer
+from learning_system.practice.serializers import PracticeTaskCreateSerializer
 User = get_user_model()
 
 class TestBase(APITestCase):
-    def test_create_student(self):
+    def _create_student(self):
+        client = APIClient()
         group_1 = StudyGroup.objects.create()
         data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
                 'study_group': group_1.pk}
 
-        response = self.client.post(reverse('users:student-list'), data = data, format='json')
-        '''
-        response = self.client.post('/core/v1/users/students/', \
-            data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
-                'study_group': group_1.pk})
-        '''
-
-        print(response.content)
+        response = client.post(reverse('users:student-list'), data = data, format='json')
         self.assertEqual(response.status_code == 201, True)
-'''
+
     def setUp(self):
         self._create_student()
-    
+
     def test_user_login(self):
         resp = self.client.post(reverse('users:login_user'),
                                 data={
@@ -42,7 +37,6 @@ class TestBase(APITestCase):
                                     'password': "password"
                                 })
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
 
 class UserSignOutViewTest(TestBase):
     def setUpExtra(self):
@@ -57,18 +51,17 @@ class UserSignOutViewTest(TestBase):
 class GetAllStudentsTest(TestCase):
     def _create_student(self):
         group_1 = StudyGroup.objects.create()
-        response = self.client.post(reverse('student', \
+        response = self.client.post(reverse('users:student-list'), \
             data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
-                'study_group': group_1.pk}))
+                'study_group': group_1.pk})
 
         self.assertEqual(response.status_code == 201, True)
 
     def _create_teacher(self):
         group_1 = StudyGroup.objects.create()
-        response = self.client.post('/core/v1/users/teacher/create/', \
+        response = self.client.post(reverse('users:teacher-list'), \
             data = {'username':"platonov", 'first_name':"Evgen",'last_name': "Platonov", 'password': "password", 'password_confirmation':"password", \
                 'study_groups': group_1.pk})
-
         self.assertEqual(response.status_code == 201, True)
 
     def _create_admin(self):
@@ -86,7 +79,7 @@ class GetAllStudentsTest(TestCase):
         self._create_admin()
 
     def test_get_all_students(self):
-        response = self.client.get('/core/v1/users/student/list/')
+        response = self.client.get(reverse('users:student-list'))
         students = Student.objects.all()
         serializer = StudentListSerializer(students, many=True)
         self.assertEqual(response.data, serializer.data)
@@ -109,30 +102,32 @@ class GetAllStudentsTest(TestCase):
             score=0,
             answers='Ответы',
             student=student)
-        serializer = GetTaskListSerializer(practicetask_1)
-        response = c.get('/core/v1/users/get_task_list_for_student/')
+        serializer = PracticeTaskCreateSerializer(practicetask_1)
+        response = c.get(reverse('practice:practicetask-student-task'))
         self.assertEqual(response.status_code, 200)
 
-    def test_set_group_for_student(self):
-        c = APIClient()
-        c.login(username='platonov', password='password')
-        student = Student.objects.get(username='ivashka')
-        study_group = StudyGroup.objects.create(name='404')
-        response = c.put(
-            '/core/v1/users/set_group_for_student/' + str(student.pk) + '/',
-            {"study_group": study_group.pk})
-        student = Student.objects.get(username='ivashka')
-        self.assertEqual(student.study_group, study_group)
-
-    def test_add_group_to_study_group(self):
+    def test_add_course_to_group(self):
         c = APIClient()
         c.login(username='ADMIN', password='password')
         course = Course.objects.create(title='Математический анализ')
         study_group = StudyGroup.objects.create(name='404')
-        response = c.put(
-            '/core/v1/users/add_study_group_to_course/' + str(study_group.pk) +
-            '/', {"available_subjects": course.pk})
+                
+        response = c.put(reverse('users:studygroup-detail',
+                                 args=[study_group.pk]),
+                         data={'available_subjects': course.pk, 'name':study_group.name})
         self.assertEqual(study_group.available_subjects.all().exists(), True)
+        
+
+
+
+    def test_add_group_to_student(self):
+        c = APIClient()
+        c.login(username='ADMIN', password='password')
+        study_group = StudyGroup.objects.create(name='404')
+        student = Student.objects.get(username='ivashka')
+        response = c.put(reverse('users:student-detail', args=[student.pk]),data = {"study_group": study_group.pk})
+        student = Student.objects.get(username='ivashka') 
+        self.assertEqual(student.study_group, study_group)
 
     def test_get_result_for_group(self):
         c = APIClient()
@@ -151,8 +146,7 @@ class GetAllStudentsTest(TestCase):
         studentprogress_1 = StudentProgress.objects.create(
             student=student_1, score=0, practice_task=practicetask_1)
 
-        response = c.get('/core/v1/users/get/results/study_group/' +
-                         str(group_3.pk))
+        response = c.get(reverse('users:studentprogress-list-study-group-results', args=[group_3.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_get_progress_for_course_and_group(self):
@@ -172,7 +166,6 @@ class GetAllStudentsTest(TestCase):
             category=practicecategory_1)
         studentprogress_1 = StudentProgress.objects.create(
             student=student_1, score=0, practice_task=practicetask_1)
-        response = c.get('/core/v1/users/students/get_progress/?&group=' +
-                         str(group_3.pk) + '&course=' + str(course_2.pk))
+        #response = c.get('/core/v1/users/students/list_task/', {'group':group_3.pk,'course':course_2.pk})
+        response = c.get(reverse('users:student-list-task'), {'group':group_3.pk,'course':course_2.pk})
         self.assertEqual(response.status_code, 200)
-'''
