@@ -57,5 +57,6 @@ class UserCreateView(viewsets.ModelViewSet):
 
 
 class UserComplaintView(viewsets.ModelViewSet):
+    permission_classes = (DRYPermissions,)    
     serializer_class = UserComplaintCreateSerializer
     queryset = UserComplaint.objects.all()

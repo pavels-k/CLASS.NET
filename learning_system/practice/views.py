@@ -9,22 +9,24 @@ from learning_system.practice.serializers import \
     PracticeTaskCreateSerializer, \
     TaskUserDataCreateSerializer, \
     PracticeCategorySerializer, \
-    PracticeTaskSerializer, GetTaskListSerializer, \
+    PracticeTaskSerializer, \
     TaskUserDataSerializer
 from learning_system.users.models import StudentProgress
 from learning_system.users.models import StudyGroup, Student
 from learning_system.courses.models import Course
 from learning_system.users.permission import IsAdminUser, IsStudent
+from dry_rest_permissions.generics import DRYPermissions
 
 
-class PracticeCategoryCreateView(generics.CreateAPIView):
+class PracticeCategoryView(viewsets.ModelViewSet):
     serializer_class = PracticeCategoryCreateSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = (DRYPermissions,)
+    queryset = PracticeCategory.objects.all()
 
 
-class PracticeTaskCreateView(viewsets.ModelViewSet):
+class PracticeTaskView(viewsets.ModelViewSet):
     serializer_class = PracticeTaskCreateSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = (DRYPermissions,)
     queryset = PracticeTask.objects.all()
 
     @action(detail=False, methods=['get'], permission_classes=[IsStudent])
@@ -36,31 +38,10 @@ class PracticeTaskCreateView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class TaskUserDataCreateView(generics.CreateAPIView):
+class TaskUserDataView(viewsets.ModelViewSet):
     serializer_class = TaskUserDataCreateSerializer
     permission_classes = [IsAdminUser]
+    queryset = TaskUserData.objects.all()
 
 
-class PracticeCategoryView(generics.ListAPIView):
-    serializer_class = PracticeCategorySerializer
-    queryset = PracticeCategory.objects
 
-
-class PracticeTaskView(generics.ListAPIView):
-    serializer_class = PracticeTaskSerializer
-    queryset = PracticeTask.objects
-
-
-class TaskUserDataView(generics.ListAPIView):
-    serializer_class = TaskUserDataSerializer
-    queryset = TaskUserData.objects
-
-
-class PracticeTaskUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PracticeTaskSerializer
-    queryset = PracticeTask.objects.all()
-    permission_classes = [IsAdminUser]
-
-
-class GetTaskListView(generics.CreateAPIView):
-    serializer_class = GetTaskListSerializer

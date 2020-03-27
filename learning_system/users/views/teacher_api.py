@@ -8,12 +8,15 @@ from learning_system.users.permission import IsTeacherOrAdmin
 from learning_system.users.views.user_api import UserCreateView
 from learning_system.users.serializers.student import StudentListSerializer, ProgressSerializer
 from learning_system.users.serializers.teacher import TeacherCreateSerializer, TeacherListSerializer
+from dry_rest_permissions.generics import DRYPermissions
 
 
 class TeacherView(UserCreateView):
     serializer_class = TeacherCreateSerializer
     queryset = Teacher.objects.all()
+    permission_classes = (DRYPermissions,)
 
 class TeacherListView(viewsets.ModelViewSet):
     serializer_class = TeacherListSerializer
     queryset = Teacher.objects.all()
+    permission_classes = (DRYPermissions,)

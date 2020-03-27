@@ -7,7 +7,7 @@ from learning_system.users.views.user_api import UserCreateView
 from learning_system.users.permission import IsStudent, IsAdminUser, IsTeacherOrAdmin
 from learning_system.users.models import Student, StudyGroup, StudentProgress, ReviewsOnTeacher
 from learning_system.courses.models import Course
-
+from dry_rest_permissions.generics import DRYPermissions
 from learning_system.users.serializers.student import StudentCreateSerializer, \
     StudyGroupCreateSerializer, \
     StudentProgressCreateSerializer, \
@@ -19,10 +19,13 @@ from learning_system.users.serializers.student import StudentCreateSerializer, \
 
 
 class StudyGroupView(viewsets.ModelViewSet):
+    permission_classes = (DRYPermissions, )
     serializer_class = StudyGroupCreateSerializer
     queryset = StudyGroup.objects.all()
 
+
 class StudentView(UserCreateView):
+    permission_classes = (DRYPermissions, )
     serializer_class = StudentCreateSerializer
     queryset = Student.objects.all()
     action_serializers = {
@@ -39,8 +42,7 @@ class StudentView(UserCreateView):
 
         return self.serializer_class
 
-
-    @action(detail=False, methods = ['get'])
+    @action(detail=False, methods=['get'])
     def list_task(self, request):
         queryset = self.get_queryset()
         group = self.request.query_params.get('group', None)
@@ -61,9 +63,11 @@ class StudentView(UserCreateView):
 class StudentProgressView(viewsets.ModelViewSet):
     serializer_class = StudentProgressCreateSerializer
     queryset = StudentProgress.objects.all()
-    permission_classes = [IsAdminUser]
+    permission_classes = (DRYPermissions, )
 
-    @action(detail=True, methods=['get'], permission_classes=[IsTeacherOrAdmin])
+    @action(detail=True,
+            methods=['get'],
+            permission_classes=[IsTeacherOrAdmin])
     def list_study_group_results(self, request, pk):
         id = pk
         if id == 'None':
@@ -75,11 +79,11 @@ class StudentProgressView(viewsets.ModelViewSet):
         for student in students:
             students_progress |= StudentProgress.objects.filter(
                 student=student)
-        serializer = ResultSerializer(students_progress,
-                                      many=True)  # исправить
+        serializer = ResultSerializer(students_progress, many=True)
         return Response(serializer.data)
 
 
 class ReviewsOnTeacherCreateView(viewsets.ModelViewSet):
     serializer_class = ReviewsOnTeacherCreateSerializer
     queryset = ReviewsOnTeacher.objects.all()
+    permission_classes = (DRYPermissions, )

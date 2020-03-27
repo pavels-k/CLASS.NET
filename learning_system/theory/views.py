@@ -1,4 +1,5 @@
-from rest_framework import generics
+from rest_framework import viewsets
+from dry_rest_permissions.generics import DRYPermissions
 
 from learning_system.theory.models import TheoryCategory, TheoryPost
 from learning_system.theory.serializers import TheoryCategoryCreateSerializer, \
@@ -7,19 +8,13 @@ from learning_system.theory.serializers import TheoryCategoryCreateSerializer, \
     TheoryPostSerializer
 
 
-class TheoryCategoryCreateView(generics.CreateAPIView):
+class TheoryCategoryView(viewsets.ModelViewSet):
+    permission_classes = (DRYPermissions, )    
     serializer_class = TheoryCategoryCreateSerializer
+    queryset = TheoryCategory.objects.all()
 
 
-class TheoryCategoryView(generics.ListAPIView):
-    serializer_class = TheoryCategorySerializer
-    queryset = TheoryCategory.objects
-
-
-class TheoryPostCreateView(generics.CreateAPIView):
+class TheoryPostView(viewsets.ModelViewSet):
+    permission_classes = (DRYPermissions, )    
     serializer_class = TheoryPostCreateSerializer
-
-
-class TheoryPostView(generics.ListAPIView):
-    serializer_class = TheoryPostSerializer
-    queryset = TheoryPost.objects
+    queryset = TheoryPost.objects.all()

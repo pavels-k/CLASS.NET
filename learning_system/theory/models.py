@@ -14,6 +14,18 @@ class TheoryCategory(models.Model):
 
     def __str__(self):
         return str(self.pk)
+    def has_read_permission(self):
+        return True
+
+    def has_write_permission(self, request):
+        if (self.user.is_staff == True):
+            return True
+        return False
+
+    def has_create_permission(self):
+        if (self.user.is_staff == True):
+            return True
+        return False
 
 
 class TheoryPost(models.Model):
@@ -27,3 +39,16 @@ class TheoryPost(models.Model):
 
     def __str__(self):
         return str(self.pk)
+
+    def has_read_permission(self):
+        return True
+
+    def has_write_permission(self, request):
+        if (self.user.is_staff == True):
+            return True
+        return False
+
+    def has_create_permission(self):
+        if (self.user.is_staff == True):
+            return True
+        return False

@@ -1,13 +1,11 @@
-from rest_framework import generics
+from rest_framework import viewsets
+from dry_rest_permissions.generics import DRYPermissions
 
 from learning_system.courses.models import Course
 from learning_system.courses.serializers import CourseCreateSerializer
 
 
-class CourseCreateView(generics.CreateAPIView):
+class CourseView(viewsets.ModelViewSet):
+    permission_classes = (DRYPermissions,)
     serializer_class = CourseCreateSerializer
-
-
-class CourseView(generics.ListAPIView):
-    serializer_class = CourseCreateSerializer
-    queryset = Course.objects
+    queryset = Course.objects.all()

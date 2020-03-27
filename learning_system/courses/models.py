@@ -10,3 +10,16 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
+    def has_read_permission(self):
+        return True
+
+    def has_write_permission(self, request):
+        if (self.user.is_staff == True):
+            return True
+        return False
+
+    def has_create_permission(self):
+        if (self.user.is_staff == True):
+            return True
+        return False

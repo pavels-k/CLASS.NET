@@ -1,11 +1,11 @@
-
-from django.conf.urls import url
+from django.conf.urls import url, include
+from rest_framework import routers
 
 from learning_system.courses import views
 
 app_name = 'courses'
 
-urlpatterns = [
-    url(r'course/create/$', views.CourseCreateView.as_view(), name="create_course"),
-    url(r'course/list$', views.CourseView.as_view(), name="course_list"),
-]
+router = routers.DefaultRouter()
+router.register(r'course', views.CourseView)
+
+urlpatterns = [url('', include(router.urls))]

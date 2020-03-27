@@ -1,12 +1,15 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
+from rest_framework import routers
 
 from learning_system.theory import views
 
 app_name = 'theory'
+ 
+router = routers.DefaultRouter()
+router.register(r'theory_category', views.TheoryCategoryView)    
+router.register(r'theory_post', views.TheoryPostView)    
 
 urlpatterns = [
-    url(r'theory_category/create/$', views.TheoryCategoryCreateView.as_view(), name="create_theory_category"),
-    url(r'theory_post/create/$', views.TheoryPostCreateView.as_view(), name="create_theory_post"),
-    url(r'theory_category/list$', views.TheoryCategoryView.as_view(), name="theory_category_list"),
-    url(r'theory_post/list$', views.TheoryPostView.as_view(), name="theory_post_list"),
+    url('', include(router.urls))
+
 ]
