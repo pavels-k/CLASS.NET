@@ -41,13 +41,15 @@ class Student(User):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True) | (self.user.role == 'T'):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True) | (self.user.role == 'T'):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True) | (self.user.role == 'T'):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True) | (self.user.role == 'T'):
+                return True
         return False
 
 
@@ -68,13 +70,15 @@ class Teacher(User):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
 
@@ -97,13 +101,15 @@ class StudyGroup(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated():
+            if (self.user.is_staff == True):
+                return True
         return False
 
 
@@ -128,13 +134,15 @@ class StudentProgress(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
 
@@ -155,13 +163,15 @@ class UserComplaint(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
 
@@ -184,11 +194,13 @@ class ReviewsOnTeacher(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False

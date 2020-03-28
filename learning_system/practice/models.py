@@ -25,13 +25,15 @@ class PracticeCategory(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
 
@@ -65,8 +67,9 @@ class PracticeTask(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
@@ -107,11 +110,13 @@ class TaskUserData(models.Model):
         return True
 
     def has_write_permission(self, request):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
 
     def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
         return False
