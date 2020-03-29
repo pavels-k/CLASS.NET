@@ -11,8 +11,7 @@ from rest_framework.test import APITestCase
 from django.contrib.auth import authenticate, login, logout
 from learning_system.courses.models import Course
 from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
-from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, \
-    StudyGroup, User
+from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, StudyGroup, User
 from learning_system.users.serializers.student import StudentListSerializer, StudyGroupCreateSerializer
 from learning_system.practice.serializers import PracticeTaskCreateSerializer
 User = get_user_model()
@@ -26,8 +25,14 @@ class TestAdmin(APITestCase):
 
     def test_CRUD_student(self):
         group_1 = StudyGroup.objects.create()
-        data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
-                'study_group': group_1.pk}
+        data = {
+            'username': "ivashka",
+            'first_name': "Ivan",
+            'last_name': "Nikolaev",
+            'password': "password",
+            'password_confirmation': "password",
+            'study_group': group_1.pk
+        }
         response = self.client.post(reverse('users:student-list'),
                                     data=data,
                                     format='json')
@@ -57,8 +62,14 @@ class TestTeacher(APITestCase):
 
     def test_CRUD_student(self):
         group_1 = StudyGroup.objects.create()
-        data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
-                'study_group': group_1.pk}
+        data = {
+            'username': "ivashka",
+            'first_name': "Ivan",
+            'last_name': "Nikolaev",
+            'password': "password",
+            'password_confirmation': "password",
+            'study_group': group_1.pk
+        }
         response = self.client.post(reverse('users:student-list'),
                                     data=data,
                                     format='json')
