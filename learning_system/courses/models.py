@@ -12,11 +12,24 @@ class Course(models.Model):
         return self.title
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 

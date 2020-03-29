@@ -49,8 +49,8 @@ class UserCreateView(viewsets.ModelViewSet):
         if user:
             username = request.data.get('username')
             password = request.data.get('password')
-            authenticate(username=username, password=password)
-            login(request, user)
+            #authenticate(username=username, password=password)
+            #login(request, user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

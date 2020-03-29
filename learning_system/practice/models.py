@@ -22,11 +22,24 @@ class PracticeCategory(models.Model):
         return str(self.pk)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 
@@ -35,6 +48,7 @@ class PracticeCategory(models.Model):
             if (self.user.is_staff == True):
                 return True
         return False
+
 
 
 class PracticeTask(models.Model):
@@ -64,18 +78,33 @@ class PracticeTask(models.Model):
         return str(self.pk)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
                 return True
         return False
 
-    def has_create_permission(self):
-        if (self.user.is_staff == True):
-            return True
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
+                return True
         return False
+
+    def has_create_permission(self):
+        if self.user.is_authenticated:
+            if (self.user.is_staff == True):
+                return True
+        return False
+
 
 
 class TaskUserData(models.Model):
@@ -107,11 +136,24 @@ class TaskUserData(models.Model):
         return str(self.pk)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 
@@ -120,3 +162,4 @@ class TaskUserData(models.Model):
             if (self.user.is_staff == True):
                 return True
         return False
+

@@ -38,11 +38,24 @@ class Student(User):
         super(Student, self).save(*args, **kwargs)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True) | (self.user.role == 'T'):
+                return True
+        return False
+    
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True) | (request.user.role == 'T'):
                 return True
         return False
 
@@ -67,11 +80,24 @@ class Teacher(User):
         super(Teacher, self).save(*args, **kwargs)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 
@@ -98,16 +124,29 @@ class StudyGroup(models.Model):
         return self.name
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
                 return True
         return False
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
+                return True
+        return False
+
     def has_create_permission(self):
-        if self.user.is_authenticated():
+        if self.user.is_authenticated:
             if (self.user.is_staff == True):
                 return True
         return False
@@ -131,11 +170,24 @@ class StudentProgress(models.Model):
         return str(self.pk)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 
@@ -160,11 +212,24 @@ class UserComplaint(models.Model):
         return str(self.pk)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 
@@ -191,11 +256,24 @@ class ReviewsOnTeacher(models.Model):
         return str(self.pk)
 
     def has_read_permission(self):
-        return True
+        if self.user.is_authenticated:
+            return True
+        return False
 
-    def has_write_permission(self, request):
+    def has_object_read_permission(self, request):
+        if self.user.is_authenticated:
+            return True
+        return False
+
+    def has_write_permission(self):
         if self.user.is_authenticated:
             if (self.user.is_staff == True):
+                return True
+        return False
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            if (request.user.is_staff == True):
                 return True
         return False
 

@@ -13,60 +13,161 @@ from learning_system.courses.models import Course
 from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
 from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, \
     StudyGroup, User
-from learning_system.users.serializers.student import StudentListSerializer
+from learning_system.users.serializers.student import StudentListSerializer, StudyGroupCreateSerializer
 from learning_system.practice.serializers import PracticeTaskCreateSerializer
 User = get_user_model()
 
-class TestBase(APITestCase):
-    def _create_student(self):
-        client = APIClient()
-        print(client)
-        print(client.login(username='ADMIN', password='password'))
-        print(client)
+
+class TestAdmin(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_superuser('user', 'test@mail.ru',
+                                                  'user')
+        self.client.login(username='user', password='user')
+
+    def test_CRUD_student(self):
         group_1 = StudyGroup.objects.create()
         data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
                 'study_group': group_1.pk}
-
-        response = client.post(reverse('users:student-list'), data = data, format='json')
-        print(response.data)
+        response = self.client.post(reverse('users:student-list'),
+                                    data=data,
+                                    format='json')
+        pk = response.data.get('id')
         self.assertEqual(response.status_code == 201, True)
 
+        group_2 = StudyGroup.objects.create()
+        response = self.client.put(reverse('users:student-detail', args=[pk]),
+                                   data={'study_group': group_2.pk})
+        self.assertEqual(Student.objects.get(pk=pk).study_group.pk, group_2.pk)
+
+        response = self.client.get(reverse('users:student-list'))
+        students = Student.objects.all()
+        serializer = StudentListSerializer(students, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.delete(
+            reverse('users:student-detail', args=[pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class TestTeacher(APITestCase):
     def setUp(self):
-        my_admin = User.objects.create_superuser('ADMIN', 'myemail@test.com',
-                                                 'password')
-        self._create_student()
+        self.user = Teacher.objects.create_user('user', 'test@mail.ru', 'user')
+        self.client.login(username='user', password='user')
 
-    def test_user_login(self):
-        resp = self.client.post(reverse('users:login_user'),
-                                data={
-                                    'username': "ivashka",
-                                    'password': "password"
-                                })
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    def test_CRUD_student(self):
+        group_1 = StudyGroup.objects.create()
+        data = {'username':"ivashka", 'first_name':"Ivan",'last_name': "Nikolaev", 'password': "password", 'password_confirmation':"password", \
+                'study_group': group_1.pk}
+        response = self.client.post(reverse('users:student-list'),
+                                    data=data,
+                                    format='json')
+        pk = response.data.get('id')
+        self.assertEqual(response.status_code == 201, True)
 
-'''
-class MemberTests(APITestCase):
-    def test_api_jwt(self):
+        group_2 = StudyGroup.objects.create()
+        response = self.client.put(reverse('users:student-detail', args=[pk]),
+                                   data={'study_group': group_2.pk})
+        self.assertEqual(Student.objects.get(pk=pk).study_group.pk, group_2.pk)
 
-        url = '/core/v1/users/api/token'
-        u = User.objects.create_user(username='user', email='user@foo.com', password='pass')
-        u.is_active = False
-        u.save()
+        response = self.client.get(reverse('users:student-list'))
+        students = Student.objects.all()
+        serializer = StudentListSerializer(students, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        resp = self.client.post(url, {'email':'user@foo.com', 'password':'pass'}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.delete(
+            reverse('users:student-detail', args=[pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        u.is_active = True
-        u.save()
+    def test_CRUD_study_group(self):
+        course_1 = Course.objects.create()
+        data = {'name': "group_1", 'available_subjects': course_1.pk}
+        response = self.client.post(reverse('users:studygroup-list'),
+                                    data=data,
+                                    format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        resp = self.client.post(url, {'username':'user@foo.com', 'password':'pass'}, format='json')
-        print(resp.data)
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertTrue('token' in resp.data)
-        token = resp.data['token']
-        #print(token)
+        study_group = StudyGroup.objects.create()
+        study_group.available_subjects.add(course_1)
+        course_2 = Course.objects.create()
+        response = self.client.put(reverse('users:studygroup-detail',
+                                           args=[study_group.pk]),
+                                   data={
+                                       'name': "name",
+                                       'available_subjects': course_2.pk
+                                   })
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        verification_url = reverse('api-jwt-verify')
-        resp = self.client.post(verification_url, {'token': token}, format='json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-'''
+        response = self.client.get(reverse('users:studygroup-list'))
+        studygroups = StudyGroup.objects.all()
+        serializer = StudyGroupCreateSerializer(studygroups, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.delete(
+            reverse('users:studygroup-detail', args=[study_group.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class TestStudent(APITestCase):
+    def setUp(self):
+        self.user = Student.objects.create_user('user', 'test@mail.ru', 'user')
+        self.client.login(username='user', password='user')
+
+    def test_CRUD_study_group(self):
+        course_1 = Course.objects.create()
+        data = {'name': "group_1", 'available_subjects': course_1.pk}
+        response = self.client.post(reverse('users:studygroup-list'),
+                                    data=data,
+                                    format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        study_group = StudyGroup.objects.create()
+        study_group.available_subjects.add(course_1)
+        course_2 = Course.objects.create()
+        response = self.client.put(reverse('users:studygroup-detail',
+                                           args=[study_group.pk]),
+                                   data={
+                                       'name': "name",
+                                       'available_subjects': course_2.pk
+                                   })
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        response = self.client.get(reverse('users:studygroup-list'))
+        studygroups = StudyGroup.objects.all()
+        serializer = StudyGroupCreateSerializer(studygroups, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.delete(
+            reverse('users:studygroup-detail', args=[study_group.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class TestAnonymoususer(APITestCase):
+    def test_CRUD_study_group(self):
+        course_1 = Course.objects.create()
+        data = {'name': "group_1", 'available_subjects': course_1.pk}
+        response = self.client.post(reverse('users:studygroup-list'),
+                                    data=data,
+                                    format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        study_group = StudyGroup.objects.create()
+        study_group.available_subjects.add(course_1)
+        course_2 = Course.objects.create()
+        response = self.client.put(reverse('users:studygroup-detail',
+                                           args=[study_group.pk]),
+                                   data={
+                                       'name': "name",
+                                       'available_subjects': course_2.pk
+                                   })
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        response = self.client.get(reverse('users:studygroup-list'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        response = self.client.delete(
+            reverse('users:studygroup-detail', args=[study_group.pk]))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
