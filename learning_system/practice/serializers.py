@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from learning_system.courses.serializers import CourseCreateSerializer
-from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
+from learning_system.practice.models import PracticeCategory, AbstractTask
 from learning_system.users.models import StudyGroup, Student
 from learning_system.courses.models import Course
 
@@ -17,14 +17,14 @@ class PracticeCategorySerializer(PracticeCategoryCreateSerializer):
 
 class PracticeTaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PracticeTask
+        model = AbstractTask
         fields = ('content', 'complexity', 'task_type', 'category')
 
 
 class PracticeTaskSerializer(serializers.ModelSerializer):
     #category = PracticeCategorySerializer()
     class Meta:
-        model = PracticeTask
+        model = AbstractTask
         fields = ('content', 'complexity', 'task_type')
     def update(self, instance, validated_data):
         instance.content = validated_data.get('content', instance.content)
@@ -32,7 +32,7 @@ class PracticeTaskSerializer(serializers.ModelSerializer):
         instance.task_type = validated_data.get('task_type', instance.task_type)
         instance.save()
         return instance
-
+'''
 class TaskUserDataCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskUserData
@@ -40,6 +40,6 @@ class TaskUserDataCreateSerializer(serializers.ModelSerializer):
 
 class TaskUserDataSerializer(TaskUserDataCreateSerializer):
     practice_task = PracticeTaskSerializer()
-
+'''
 
     

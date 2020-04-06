@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from learning_system.users.serializers.user import UserCreateSerializer
 from learning_system.users.models import Student, StudyGroup, StudentProgress, ReviewsOnTeacher
-from learning_system.practice.models import PracticeTask
+from learning_system.practice.models import AbstractTask
 from learning_system.courses.serializers import CourseCreateSerializer
 from learning_system.practice.serializers import PracticeTaskSerializer, PracticeCategory
 

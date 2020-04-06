@@ -51,7 +51,7 @@ class PracticeCategory(models.Model):
 
 
 
-class PracticeTask(models.Model):
+class AbstractTask(models.Model):
     class Task:
         TESTING = 1
         SELF_EDUCATION = 2
@@ -69,8 +69,19 @@ class PracticeTask(models.Model):
     category = models.ForeignKey(PracticeCategory,
                                  on_delete=models.CASCADE,
                                  verbose_name='Практический материал')
+    status = models.CharField(max_length=1,
+                              choices=(('C', 'Correct'),
+                                       ('P', 'Partially correct'), ('W',
+                                                                    'Wrong')),
+                              verbose_name='Статус ответа')
+    tries_count = models.IntegerField(default=0, verbose_name='Число попыток')
+    user_answer = models.CharField(max_length=50,
+                                   verbose_name='Ответ пользователя')
+    correct_answer = models.CharField(max_length=50,
+                                      verbose_name='Правильный ответ')
 
     class Meta:
+        abstract = True
         verbose_name = 'практическое задание'
         verbose_name_plural = 'практические задания'
 
@@ -105,12 +116,22 @@ class PracticeTask(models.Model):
                 return True
         return False
 
+class FormulInputTask(AbstractTask):
+    pass
 
+class FormulInputTaskVariation(models.Model):
+    param1 = models.IntegerField()
+    param2 = models.IntegerField()
+    task = models.ForeignKey(FormulInputTask, on_delete=models.CASCADE)
 
+    
+'''
 class TaskUserData(models.Model):
-    practice_task = models.ForeignKey(PracticeTask,
+    
+    practice_task = models.ForeignKey(AbstractTask,
                                       on_delete=models.CASCADE,
                                       verbose_name='Практическое задание')
+    
     status = models.CharField(max_length=1,
                               choices=(('C', 'Correct'),
                                        ('P', 'Partially correct'), ('W',
@@ -162,4 +183,4 @@ class TaskUserData(models.Model):
             if (self.user.is_staff == True):
                 return True
         return False
-
+'''

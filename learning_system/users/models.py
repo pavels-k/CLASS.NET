@@ -4,7 +4,7 @@ from django.utils import timezone
 from dry_rest_permissions.generics import allow_staff_or_superuser
 
 from learning_system.courses.models import Course
-from learning_system.practice.models import PracticeTask
+from learning_system.practice.models import AbstractTask
 
 
 class User(AbstractUser):
@@ -158,10 +158,11 @@ class StudentProgress(models.Model):
                                 verbose_name='Студент')
     score = models.IntegerField(verbose_name='Количество очков')
     answers = models.CharField(max_length=100, verbose_name='Ответы')
+    '''
     practice_task = models.ForeignKey('practice.PracticeTask',
                                       on_delete=models.CASCADE,
                                       verbose_name='Задача')
-
+    '''
     class Meta:
         verbose_name = 'прогресс студента'
         verbose_name_plural = 'прогрессы студентов'

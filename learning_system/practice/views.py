@@ -3,14 +3,12 @@ from django.shortcuts import get_object_or_404, redirect
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from learning_system.practice.models import TaskUserData, PracticeTask, PracticeCategory
+from learning_system.practice.models import AbstractTask, PracticeCategory
 from learning_system.practice.serializers import \
     PracticeCategoryCreateSerializer, \
     PracticeTaskCreateSerializer, \
-    TaskUserDataCreateSerializer, \
     PracticeCategorySerializer, \
-    PracticeTaskSerializer, \
-    TaskUserDataSerializer
+    PracticeTaskSerializer
 from learning_system.users.models import StudentProgress
 from learning_system.users.models import StudyGroup, Student
 from learning_system.courses.models import Course
@@ -23,11 +21,11 @@ class PracticeCategoryView(viewsets.ModelViewSet):
     permission_classes = (DRYPermissions,)
     queryset = PracticeCategory.objects.all()
 
-
+'''
 class PracticeTaskView(viewsets.ModelViewSet):
     serializer_class = PracticeTaskCreateSerializer
     permission_classes = (DRYPermissions,)
-    queryset = PracticeTask.objects.all()
+    queryset = AbstractTask.objects.all()
 
     @action(detail=False, methods=['get'], permission_classes=[IsStudent])
     def student_task(self, request):
@@ -42,6 +40,6 @@ class TaskUserDataView(viewsets.ModelViewSet):
     serializer_class = TaskUserDataCreateSerializer
     permission_classes = [IsAdminUser]
     queryset = TaskUserData.objects.all()
-
+'''
 
 
