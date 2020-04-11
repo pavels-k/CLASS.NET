@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'dry_rest_permissions',
     'django.contrib.sites',
+    'polymorphic',
 ]
 SITE_ID = 2
 AUTH_USER_MODEL = 'users.User'

@@ -1,4 +1,5 @@
 from django.db import models
+from polymorphic.models import PolymorphicModel
 
 from learning_system.theory.models import Course
 
@@ -51,7 +52,7 @@ class PracticeCategory(models.Model):
 
 
 
-class AbstractTask(models.Model):
+class AbstractTask(PolymorphicModel):
     class Task:
         TESTING = 1
         SELF_EDUCATION = 2

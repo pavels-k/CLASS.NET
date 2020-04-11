@@ -1,11 +1,11 @@
 from django.test import TestCase
 
 from learning_system.courses.models import Course
-from learning_system.practice.models import PracticeCategory, PracticeTask
+from learning_system.practice.models import PracticeCategory
 from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, \
     StudyGroup, User
 
-
+'''
 class UserModelTest(TestCase):
     def test_student_create(self):
         group = StudyGroup.objects.create(name='group')
@@ -23,15 +23,6 @@ class UserModelTest(TestCase):
         teacher.study_groups.add(group1, group2)
         self.assertEqual(teacher.study_groups.count(), 2)
 
-    '''
-    def test_student_can_be_in_only_one_group(self):
-        student = Student.objects.create(username='Student')
-        group1 = StudyGroup.objects.create(name='group1')
-        group2 = StudyGroup.objects.create(name='group2')
-        student.groups.add(group1, group2)
-        group_validate(student_1)
-        # self.assertEqual(student_1.groups.all().count() == 0, True)
-    '''
     def test_group_can_be_tied_to_several_сourses(self):
         group_1 = StudyGroup.objects.create()
         student_1 = Student.objects.create(username='Student #1', study_group=group_1)
@@ -66,9 +57,7 @@ class UserModelTest(TestCase):
         student_1 = Student.objects.create(username='student_1', study_group=group)
         student_2 = Student.objects.create(username='student_2', study_group=group)
         students = Student.objects.filter(study_group=group)
-        #print(students[0].study_group)
-        #print(students)
-        #print(students)
+
 
         course_1 = Course.objects.create()
         course_2 = Course.objects.create()
@@ -80,6 +69,6 @@ class UserModelTest(TestCase):
         studentprogress_2 = StudentProgress.objects.create(student=student_1, score=0, practice_task=practicetask_2)
 
         study_groups = StudentProgress.objects.filter(student = students)
-        #print(study_groups)
 
         self.assertEqual(Student.objects.exists(), True)
+'''

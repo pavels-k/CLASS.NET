@@ -10,7 +10,7 @@ import json
 from rest_framework.test import APITestCase
 from django.contrib.auth import authenticate, login, logout
 from learning_system.courses.models import Course
-from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
+from learning_system.practice.models import PracticeCategory
 from learning_system.users.models import Student, Teacher, StudentProgress, UserComplaint, ReviewsOnTeacher, \
     StudyGroup, User
 from learning_system.users.serializers.student import StudentListSerializer

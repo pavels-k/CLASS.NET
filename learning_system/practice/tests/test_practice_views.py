@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework import status
 
-from learning_system.practice.models import PracticeCategory, PracticeTask, TaskUserData
+from learning_system.practice.models import PracticeCategory
 from learning_system.courses.models import Course
 '''
 class UpdatePracticeTask(APITestCase):
